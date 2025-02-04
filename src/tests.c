@@ -15,11 +15,11 @@ CLOVE_TEST(AxMatrix) {
     AxMatrix* mat1 = ax_matrix_create(5, 5, arena);
     
     // Create a 5x5 matrix using regular malloc
-    AxMatrix* mat2 = ax_matrix_create(5, 5, arena);
+    AxMatrix* mat2 = ax_matrix_create(5, 5, NULL);
     
     // Initialize matrix values
-    for (musz i = 0; i < 5; i++) {
-        for (musz j = 0; j < 5; j++) {
+    for (size_t i = 0; i < 5; i++) {
+        for (size_t j = 0; j < 5; j++) {
             AX_MATRIX_AT(*mat1, i, j) = (axm_type)(i * 10 + j);
             AX_MATRIX_AT(*mat2, i, j) = 0.0;
         }
