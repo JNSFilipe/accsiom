@@ -7,6 +7,10 @@
 #define AXMATRIX_IMPLEMENTATION
 #include "include/axmatrix.h"
 
+axm_type mat_init(AxMatrix *self, musz i, musz j) {
+  return i*10+j;
+}
+
 float from_np(char *exp){
   FILE *fp;
   float result;
@@ -46,12 +50,15 @@ CLOVE_TEST(AxMatrix) {
   AxMatrix* mat2 = ax_matrix_create(5, 5, arena);
     
   // Initialize matrix values
-  for (musz i = 0; i < 5; i++) {
-    for (musz j = 0; j < 5; j++) {
-      AX_MATRIX_AT(*mat1, i, j) = (axm_type)(i * 10 + j);
-      AX_MATRIX_AT(*mat2, i, j) = 0.0;
-    }
-  }
+  ax_matrix_map(mat1, mat_init);
+
+  // Matrix operations
+  AxMatrix *matadd = ax_matrix_add(mat1, mat1, arena);
+  CLOVE_FLOAT_EQ_P(from_np("M=np.mgrid[0:5,0:5][0]*10+np.mgrid[0:5,0:5][1];S=M+M;print(S[3,2])"), AX_MATRIX_AT(*matadd, 3, 2), 0.01);
+  AxMatrix *matelmul = ax_matrix_elementwise_multiply(mat1, mat1, arena);
+  CLOVE_FLOAT_EQ_P(from_np("M=np.mgrid[0:5,0:5][0]*10+np.mgrid[0:5,0:5][1];S=M*M;print(S[2,3])"), AX_MATRIX_AT(*matelmul, 2, 3), 0.01);
+  AxMatrix *matmul = ax_matrix_multiply(mat1, mat1, arena);
+  CLOVE_FLOAT_EQ_P(from_np("M=np.mgrid[0:5,0:5][0]*10+np.mgrid[0:5,0:5][1];S=np.matmul(M,M);print(S[0,4])"), AX_MATRIX_AT(*matmul, 0, 4), 0.01);
 
   // Create a slice of mat1 (rows 1-3, columns 2-4)
   AxMatrix slice = AX_MATRIX_SLICE(*mat1, 

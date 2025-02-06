@@ -88,6 +88,17 @@ int main(void) {
   printf("mat2[3,4]: %.1f (should be 55.0)\n", AX_MATRIX_AT(*mat2, 3, 4));
   printf("mat2[2,2]: %.1f (should be 99.0)\n", AX_MATRIX_AT(*mat2, 2, 2));
 
+
+  AxMatrix *matadd = ax_matrix_add(mat1, mat1, arena);
+  AxMatrix *matelmul = ax_matrix_elementwise_multiply(mat1, mat1, arena);
+  AxMatrix *matmul = ax_matrix_multiply(mat1, mat1, arena);
+  printf("\nmatadd:\n");
+  ax_matrix_print(matadd, "%.1f");
+  printf("\nmatelmul:\n");
+  ax_matrix_print(matelmul, "%.1f");
+  printf("\nmatmul:\n");
+  ax_matrix_print(matmul, "%.1f");
+
   // Cleanup
   ax_arena_destroy(arena);
   ax_matrix_destroy(mat2);
